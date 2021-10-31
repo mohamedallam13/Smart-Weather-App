@@ -123,6 +123,10 @@ header {
     width: 75%;
 }
 
+#weather-info-header{
+    display: inline;
+}
+
 .dotted-border {
     border: black dotted;
 }

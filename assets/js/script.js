@@ -103,9 +103,27 @@ function setUV(lat, lon) {
             if (data.cod == "404") {
                 return;
             }
-            $("#UV").text("UV Index (Current): " + data.current.uvi);
+            var currUVIndex = data.current.uvi;
+            var color = getColor(currUVIndex);
+            $("#UV").html("UV Index (Current)<span style='background-color:" + color + "; font-weight: bolder'>: " + currUVIndex + "</span>");
             console.log(data);
         });
+}
+
+function getColor(currUVIndex){
+    if(currUVIndex >= 0 || currUVIndex <= 2){
+        return "green"
+    }
+    if(currUVIndex >= 3 || currUVIndex <= 5){
+        return "yellow"
+    }
+    if(currUVIndex >= 6 || currUVIndex <= 7){
+        return "orange"
+    }
+    if(currUVIndex >= 8 || currUVIndex <= 10){
+        return "red"
+    }
+    return "violet";
 }
 
 function setDataToLocalStorage(data, city, label) {
@@ -125,17 +143,19 @@ function setMainInfoSection(data) {
     var uvIndex = "";
     var lon = data.coord.lon;
     var lat = data.coord.lat;
-
+    var iconurl = "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png";
     var basicInfoEl = $("#basic-info")
     basicInfoEl.html("");
     basicInfoEl.addClass("dotted-border");
     basicInfoEl.append([
-        createInfoSectionRow("<h2>", { text: data.name + " (" + timestamp + ")", className: "weather-info-header" }),
+        createInfoSectionRow("<h2>", { text: data.name + " (" + timestamp + ")", id:"weather-info-header" }),
         createInfoSectionRow("<p>", { text: "Temp: " + temp }),
         createInfoSectionRow("<p>", { text: "Wind: " + windSpeed }),
         createInfoSectionRow("<p>", { text: "Humidity: " + humidty }),
         createInfoSectionRow("<p>", { text: "UV Index: " + uvIndex, id: "UV" })
     ])
+    var titleEl = $("#weather-info-header")
+    titleEl.after($("<img>",{src: iconurl}))
     setUV(lat, lon);
 }
 
