@@ -17,7 +17,6 @@ const NUMBER_OF_CITY_HISTORY_ENTIRES = 5;
 function getDate() {
     date = moment();
     timestamp = date.format('MM/DD/YYYY');
-    console.log(timestamp);
 }
 
 function runWeatherAppFromButton(event) {
@@ -48,7 +47,6 @@ function runWeatherApp(city) {
 function getCityFromInput() {
     var inputEl = $("#city");
     var city = inputEl.val().toUpperCase();
-    console.log(city)
     return city;
 }
 
@@ -64,7 +62,6 @@ function getDataFromLocalStorage(locallyCitySavedData, city) {
 
 function getWeatherDataViaAPI(city) {
     ["weather", "forecast"].forEach(dataType => {
-        console.log(dataType)
         getAPIData(city, dataType);
     })
 }
@@ -72,7 +69,6 @@ function getWeatherDataViaAPI(city) {
 function getAPIData(city, dataType) {
     var endPoint = WEATHER_API_ENDPOINT({ type: dataType, city: city, api_key: API_KEY })
     buttonSet = false;
-    console.log(endPoint)
     fetch(endPoint)
         .then(function (response) {
             return response.json();
@@ -83,7 +79,6 @@ function getAPIData(city, dataType) {
                 $("#city").val("")
                 return;
             }
-            console.log(data);
             setDataToLocalStorage(data, city, dataType);
             WEATHER_APP_SET_SECTIONS[dataType](data, city);
             if (!buttonSet) {
@@ -106,21 +101,20 @@ function setUV(lat, lon) {
             var currUVIndex = data.current.uvi;
             var color = getColor(currUVIndex);
             $("#UV").html("UV Index (Current)<span style='background-color:" + color + "; font-weight: bolder'>: " + currUVIndex + "</span>");
-            console.log(data);
         });
 }
 
-function getColor(currUVIndex){
-    if(currUVIndex >= 0 || currUVIndex <= 2){
+function getColor(currUVIndex) {
+    if (currUVIndex >= 0 && currUVIndex <= 2) {
         return "green"
     }
-    if(currUVIndex >= 3 || currUVIndex <= 5){
+    if (currUVIndex > 2 && currUVIndex <= 5) {
         return "yellow"
     }
-    if(currUVIndex >= 6 || currUVIndex <= 7){
+    if (currUVIndex > 5 && currUVIndex <= 7) {
         return "orange"
     }
-    if(currUVIndex >= 8 || currUVIndex <= 10){
+    if (currUVIndex > 7 && currUVIndex <= 10) {
         return "red"
     }
     return "violet";
@@ -148,14 +142,14 @@ function setMainInfoSection(data) {
     basicInfoEl.html("");
     basicInfoEl.addClass("dotted-border");
     basicInfoEl.append([
-        createInfoSectionRow("<h2>", { text: data.name + " (" + timestamp + ")", id:"weather-info-header" }),
+        createInfoSectionRow("<h2>", { text: data.name + " (" + timestamp + ")", id: "weather-info-header" }),
         createInfoSectionRow("<p>", { text: "Temp: " + temp }),
         createInfoSectionRow("<p>", { text: "Wind: " + windSpeed }),
         createInfoSectionRow("<p>", { text: "Humidity: " + humidty }),
         createInfoSectionRow("<p>", { text: "UV Index: " + uvIndex, id: "UV" })
     ])
     var titleEl = $("#weather-info-header")
-    titleEl.after($("<img>",{src: iconurl}))
+    titleEl.after($("<img>", { src: iconurl }))
     setUV(lat, lon);
 }
 
@@ -175,10 +169,21 @@ function setForecastSection(data) {
     var forecastCardsContainer = $("<div>", { id: "forecast-cards-container" });
     var cardsDivsArr = []
     var addedDates = [];
-    data.list.forEach(forecastObj => {
+    data.list.forEach((forecastObj, i) => {
         var date = moment(forecastObj.dt_txt, "YYYY-MM-DD HH:mm:ss").format('MM/DD/YYYY');
-        if (addedDates.includes(date) || date == timestamp) {
-            return;
+        var hour = moment(forecastObj.dt_txt, "YYYY-MM-DD HH:mm:ss").hour();
+        console.log(hour)
+        if (i != data.list.length - 1) {
+            if (addedDates.includes(date) || date == timestamp) {
+                return;
+            }
+            if (hour < 8 || hour > 15) {
+                return;
+            }
+        } else {
+            if (cardsDivsArr.length == 5) {
+                return;
+            }
         }
         var cardDiv = createCardDiv(forecastObj, date);
         addedDates.push(date);
@@ -208,8 +213,7 @@ function createCardDiv(forecastObj, date) {
 }
 
 function setButtonsSection(city) {
-    console.log(city)
-    if(citiesList.includes(city)){
+    if (citiesList.includes(city)) {
         return;
     }
     var idsArr = ["#main-buttons-list", "#sec-buttons-list"]
@@ -219,10 +223,7 @@ function setButtonsSection(city) {
             var borderToButton = $("<div>", { class: "border-to-button" })
             listEl.before(borderToButton);
         }
-        console.log(citiesList.length);
-        console.log(citiesList.length > NUMBER_OF_CITY_HISTORY_ENTIRES);
         if (citiesList.length > NUMBER_OF_CITY_HISTORY_ENTIRES) {
-            console.log($(listId + " li:last-child"))
             $(listId + " li:last-child").remove();
         }
         var newliEl = $("<li>");
