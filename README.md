@@ -65,5 +65,11 @@ Not Required.
 
 #### UV Index fetched from another API call, highlighted with color based on severity
 
-![Saving in local storage](./assets/images/screenshots/screenshot7.JPG)
+![UV Index fetched and colored](./assets/images/screenshots/screenshot7.JPG)
 
+
+#### Displaying multiple cities and in responsive it is at the buttom of the screen in order not to push the info secion
+
+![List of countires bookmarks desktop](./assets/images/screenshots/screenshot8.JPG)
+
+![List of countires bookmarks desktop](./assets/images/screenshots/screenshot9.JPG)
