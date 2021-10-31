@@ -10,6 +10,9 @@ var date;
 var timestamp;
 var units = "C";
 var buttonSet = false;
+var firstButton = true;
+var citiesList = [];
+const NUMBER_OF_CITY_HISTORY_ENTIRES = 5;
 
 function getDate() {
     date = moment();
@@ -21,6 +24,7 @@ function runWeatherAppFromButton(event) {
     var city = event.target.id;
     var inputEl = $("#city");
     inputEl.val(toTitleCase(city))
+    $('#weather-results')[0].scrollIntoView();
     buttonSet = true;
     runWeatherApp(city);
 }
@@ -51,8 +55,8 @@ function getCityFromInput() {
 function getDataFromLocalStorage(locallyCitySavedData, city) {
     var weatherData = locallyCitySavedData.weather;
     var forecastData = locallyCitySavedData.forecast;
-    setMainInfoSection(weatherData, city)
-    setForecastSection(forecastData, city)
+    setMainInfoSection(weatherData)
+    setForecastSection(forecastData)
     if (!buttonSet) {
         setButtonsSection(city);
     }
@@ -99,7 +103,7 @@ function setUV(lat, lon) {
             if (data.cod == "404") {
                 return;
             }
-            $("#UV").text("UV Index: " + data.current.uvi);
+            $("#UV").text("UV Index (Current): " + data.current.uvi);
             console.log(data);
         });
 }
@@ -114,7 +118,7 @@ function setDataToLocalStorage(data, city, label) {
 }
 
 
-function setMainInfoSection(data, city) {
+function setMainInfoSection(data) {
     var temp = getTemp(data.main.temp);
     var windSpeed = getWindSpeed(data.wind.speed);
     var humidty = data.main.humidity + "%";
@@ -124,6 +128,7 @@ function setMainInfoSection(data, city) {
 
     var basicInfoEl = $("#basic-info")
     basicInfoEl.html("");
+    basicInfoEl.addClass("dotted-border");
     basicInfoEl.append([
         createInfoSectionRow("<h2>", { text: data.name + " (" + timestamp + ")", className: "weather-info-header" }),
         createInfoSectionRow("<p>", { text: "Temp: " + temp }),
@@ -172,7 +177,7 @@ function createCardDiv(forecastObj, date) {
     var windSpeed = getWindSpeed(forecastObj.wind.speed);
     var humidity = forecastObj.main.humidity + "%"
     cardDiv.append([
-        createInfoSectionRow("<h5>", { text: date, class: "card-date" }),
+        createInfoSectionRow("<h6>", { text: date, class: "card-date" }),
         createInfoSectionRow("<img>", { src: iconurl }),
         createInfoSectionRow("<p>", { text: "Temp: " + temp }),
         createInfoSectionRow("<p>", { text: "Wind: " + windSpeed }),
@@ -184,19 +189,40 @@ function createCardDiv(forecastObj, date) {
 
 function setButtonsSection(city) {
     console.log(city)
-    var listEl = $("#buttons-list");
-    var newliEl = $("<li>");
-    var newButtonEl = $("<button>", { text: city, id: city, class: "aside-button recall-city-button", on: { click: runWeatherAppFromButton } });
-    newliEl.append(newButtonEl);
-    listEl.prepend(newliEl);
+    if(citiesList.includes(city)){
+        return;
+    }
+    var idsArr = ["#main-buttons-list", "#sec-buttons-list"]
+    idsArr.forEach(listId => {
+        var listEl = $(listId);
+        if (firstButton) {
+            var borderToButton = $("<div>", { class: "border-to-button" })
+            listEl.before(borderToButton);
+        }
+        console.log(citiesList.length);
+        console.log(citiesList.length > NUMBER_OF_CITY_HISTORY_ENTIRES);
+        if (citiesList.length > NUMBER_OF_CITY_HISTORY_ENTIRES) {
+            console.log($(listId + " li:last-child"))
+            $(listId + " li:last-child").remove();
+        }
+        var newliEl = $("<li>");
+        var newButtonEl = $("<button>", { text: city, id: city, class: "aside-button recall-city-button", on: { click: runWeatherAppFromButton } });
+        newliEl.append(newButtonEl);
+        listEl.prepend(newliEl);
+    })
+    citiesList.push(city);
+    firstButton = false;
 }
 
 function setUnits(element) {
     var unit = element.id;
+    $("#" + unit).addClass("toggle-active");
+    $("#" + units).removeClass("toggle-active")
     units = unit;
     var city = getCityFromInput();
     buttonSet = true;
     runWeatherApp(city);
+    $('#weather-results')[0].scrollIntoView();
 }
 function getTemp(temp) {
     if (units == "C") {

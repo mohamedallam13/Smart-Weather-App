@@ -25,18 +25,21 @@
     <div class="app-body">
         <div class="aside">
             <div id="toggle-units">
-                <button id="C" onclick="setUnits(this)">°C</button>
-                <button id="F"  onclick="setUnits(this)">°F</button>
+                <button id="C" class="toggle-button-left toggle-active" onclick="setUnits(this)">°C</button>
+                <button id="F" class="toggle-button-right" onclick="setUnits(this)">°F</button>
             </div>
             <p>Search for a city:</p>
             <input type="text" placeholder="Cairo" id="city">
             <button type="button search-button" class="aside-button" onclick="runWeatherApp()">Search</button>
-            <ul id="buttons-list"></ul>
+            <ul id="main-buttons-list"></ul>
         </div>
         <div id="weather-results">
             <div class="container" id="basic-info">
             </div>
             <div id="five-days-forecast">
+            </div>
+            <div id="below-cities">
+                <ul id="sec-buttons-list"></ul>
             </div>
         </div>
     </div>

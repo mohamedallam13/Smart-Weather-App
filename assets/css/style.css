@@ -1,5 +1,13 @@
 * {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    background-color: rgb(200, 221, 228) !important;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 header {
@@ -11,6 +19,7 @@ header {
 
 .app-body {
     display: flex;
+    margin: 15px;
 }
 
 .aside {
@@ -18,14 +27,14 @@ header {
     display: flex;
     flex-direction: column;
     align-content: stretch;
-
     padding: 5px;
+
 }
 
 .aside p {
     font-size: 20px;
     font-weight: bold;
-
+    margin: 0;
 }
 
 .aside input {
@@ -36,6 +45,7 @@ header {
     width: 100%;
     margin-top: 5px;
     border-radius: 5px;
+    margin-bottom: 5px;
 }
 
 .aside ul {
@@ -43,14 +53,46 @@ header {
     padding: 0;
 }
 
+#below-cities {
+    display: none;
+    flex-direction: column;
+}
+
+#below-cities ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+
 #toggle-units {
     display: flex;
+    margin-bottom: 10px;
 }
 
-#toggle-units button {
+.toggle-button-left {
     width: 50%;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+
 }
 
+.toggle-button-right {
+    width: 50%;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+
+.toggle-active {
+    background-color: #3a7bd5;
+    color: black;
+}
+
+
+.border-to-button {
+    border-top: black dotted;
+    margin-top: 15px;
+}
 
 .recall-city-button {
     background-image: linear-gradient(to right, #00d2ff 0%, #3a7bd5 51%, #00d2ff 100%)
@@ -79,23 +121,16 @@ header {
 
 #weather-results {
     width: 75%;
-
-    margin-left: 15px;
-
 }
 
-#basic-info {
-  
+.dotted-border {
+    border: black dotted;
 }
 
-#five-days-forecast {
-  
-
-}
 
 #forecast-cards-container {
     display: flex;
-justify-content: space-evenly;
+    justify-content: space-evenly;
 }
 
 .forecast-card {
@@ -107,4 +142,39 @@ justify-content: space-evenly;
 
 .colss {
     border: solid black 2px;
+}
+
+
+@media screen and (max-width: 768px) {
+    #forecast-cards-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .forecast-card {
+        margin-top: 15px;
+        width: 150px;
+    }
+
+    .app-body {
+        flex-direction: column;
+    }
+
+    .aside {
+        width: 100%;
+    }
+
+    #weather-results {
+        width: 100%;
+        text-align: center;
+    }
+
+    .aside ul {
+        display: none;
+    }
+
+    #below-cities {
+        display: flex;
+    }
 }
